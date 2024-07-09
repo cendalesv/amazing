@@ -30,5 +30,17 @@ td {
 }
 
 .table-bordered tbody tr.full-width-row.bg-secondary {
-  background-color: #f0f0f0; /* Cambia el color de fondo según tu preferencia */
+  background-color: #f0f0f0;
+}
+
+.color-btn {
+  color: white;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.color-btn:hover {
+  color: white;
+  background-color: #0056b3;
+  border-color: #0056b3;
 }

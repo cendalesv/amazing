@@ -203,7 +203,8 @@
     }
     }
     
-    pastEvents.forEach(event => {
+    for (let i = 0; i < pastEvents.length; i++) {
+      let event = pastEvents[i]
       let card = `
         <div class="col-md-3 mb-3">
           <div class="card h-100">
@@ -214,11 +215,11 @@
             </div>
             <div class="card-footer d-flex justify-content-between">
               <span class="text-muted">$${event.price}</span>
-              <a href="./Details.html" class="btn btn-sm btn-outline-secondary">Details</a>
+              <a href="./Details.html" class="btn btn-sm btn-outline-secondary color-btn">Details</a>
             </div>
           </div>
         </div>
       `
       container.innerHTML += card
-    })
-  
+    }
+    
