@@ -191,37 +191,123 @@
           }
         ]
       }
-  
-    let currentDate = new Date(data.currentDate);
-    let container = document.querySelector(".container .row.mt-4")
-  
-    let futureEvents = []
-    for (let i = 0; i < data.events.length; i++) {
-    let event = data.events[i]
-    if (new Date(event.date) > currentDate) {
-        futureEvents.push(event)
-    }
-    }
+      
+      const currentDate = new Date(data.currentDate);
+      const checkboxContainer = document.getElementById('checkboxContainer');
+      const eventsContainer = document.getElementById('eventsContainer');
+      const searchInput = document.getElementById('searchInput');
 
-    for (let i = 0; i < futureEvents.length; i++) {
-      let event = futureEvents[i]
-      let card = `
-        <div class="col-md-3 mb-3">
-          <div class="card h-100">
-            <img src="${event.image}" class="card-img-top" alt="${event.name}">
-            <div class="card-body">
-              <h5 class="card-title">${event.name}</h5>
-              <p class="card-text">${event.description}</p>
+      function createEventCheckboxes() {
+        checkboxContainer.innerHTML = '';
+
+        // Adding "Past Events" checkbox
+        const pastCheckboxDiv = document.createElement('div');
+        pastCheckboxDiv.classList.add('form-check', 'me-3', 'mb-2');
+
+        const pastInput = document.createElement('input');
+        pastInput.classList.add('form-check-input');
+        pastInput.type = 'checkbox';
+        pastInput.id = `pastEventsCheck`;
+
+        const pastLabel = document.createElement('label');
+        pastLabel.classList.add('form-check-label', 'text-sm');
+        pastLabel.htmlFor = `pastEventsCheck`;
+        pastLabel.textContent = 'Past Events';
+
+        pastCheckboxDiv.appendChild(pastInput);
+        pastCheckboxDiv.appendChild(pastLabel);
+        checkboxContainer.appendChild(pastCheckboxDiv);
+
+        // Existing Future Events Checkboxes
+        const futureEvents = data.events.filter(event => new Date(event.date) > currentDate);
+
+        futureEvents.forEach((event, index) => {
+          const div = document.createElement('div');
+          div.classList.add('form-check', 'me-3', 'mb-2');
+
+          const input = document.createElement('input');
+          input.classList.add('form-check-input');
+          input.type = 'checkbox';
+          input.value = event.category;
+          input.id = `eventCheck${index + 1}`;
+
+          const label = document.createElement('label');
+          label.classList.add('form-check-label', 'text-sm');
+          label.htmlFor = `eventCheck${index + 1}`;
+          label.textContent = event.category;
+
+          div.appendChild(input);
+          div.appendChild(label);
+          checkboxContainer.appendChild(div);
+        });
+      }
+
+      function displayEventCards(events) {
+        eventsContainer.innerHTML = '';
+      
+        events.forEach(event => {
+          const card = `
+            <div class="col-md-4 mb-3">
+              <div class="card h-100">
+                <img src="${event.image}" class="card-img-top" alt="${event.name}">
+                <div class="card-body">
+                  <h5 class="card-title">${event.name}</h5>
+                  <p class="card-text">${event.description}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                  <span class="text-muted">$${event.price}</span>
+                  <a href="./Details.html?id=${event._id}&name=${encodeURIComponent(event.name)}&description=${encodeURIComponent(event.description)}&price=${event.price}&image=${encodeURIComponent(event.image)}" class="btn btn-sm btn-outline-secondary color-btn">Details</a>
+                </div>
+              </div>
             </div>
-            <div class="card-footer d-flex justify-content-between">
-              <span class="text-muted">$${event.price}</span>
-              <a href="./Details.html" class="btn btn-sm btn-outline-secondary color-btn">Details</a>
-            </div>
-          </div>
-        </div>
-      `
-      container.innerHTML += card
-    }
+          `;
+          eventsContainer.innerHTML += card;
+        });
+      }
+      
+      
+
+      function filterEvents() {
+        const selectedCategories = Array.from(document.querySelectorAll('.form-check-input:checked'))
+          .map(input => input.value);
+
+        const includePastEvents = document.getElementById('pastEventsCheck').checked;
+
+        const filteredEvents = data.events.filter(event => {
+          const isFuture = new Date(event.date) > currentDate;
+          const isPast = new Date(event.date) <= currentDate;
+          const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(event.category);
+
+          return (isFuture && matchesCategory) || (includePastEvents && isPast);
+        });
+
+        displayEventCards(filteredEvents);
+      }
+
+      function searchEvents() {
+        const query = searchInput.value.toLowerCase();
+        const filteredEvents = data.events.filter(event => {
+          const isFuture = new Date(event.date) > currentDate;
+          const isPast = new Date(event.date) <= currentDate;
+          const matchesCategory = document.querySelectorAll('.form-check-input:checked').length === 0 || 
+                                  document.querySelectorAll('.form-check-input:checked').some(input => input.value === event.category);
+          const matchesSearch = event.name.toLowerCase().includes(query) || event.description.toLowerCase().includes(query);
+          return (isFuture && matchesCategory || (document.getElementById('pastEventsCheck').checked && isPast)) && matchesSearch;
+        });
+
+        displayEventCards(filteredEvents);
+      }
+
+      function setupEventListeners() {
+        document.querySelectorAll('.form-check-input').forEach(input => {
+          input.addEventListener('change', filterEvents);
+        });
+
+        searchInput.addEventListener('input', searchEvents);
+        document.getElementById('pastEventsCheck').addEventListener('change', filterEvents);
+      }
+
+      createEventCheckboxes();
+      displayEventCards(data.events.filter(event => new Date(event.date) > currentDate));
+      setupEventListeners();
     
-  
-  

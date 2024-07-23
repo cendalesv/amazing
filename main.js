@@ -211,7 +211,7 @@
             </div>
             <div class="card-footer d-flex justify-content-between">
               <span class="text-muted">$${event.price}</span>
-              <a href="./Details.html" class="btn btn-sm btn-outline-secondary color-btn">Details</a>
+              <a href="./Details.html" class="btn btn-sm btn-blue">Details</a>
             </div>
           </div>
         </div>
@@ -219,4 +219,135 @@
       container.innerHTML += card
     }
   
+
+//checkbox
+function createEventCheckboxes() {
+  let container = document.querySelector("#checkbox-container");
+  container.innerHTML = "";
+
+  // Obtén las categorías únicas de los eventos
+  let categories = [...new Set(data.events.map(event => event.category))];
+
+  categories.forEach(category => {
+    let div = document.createElement("div");
+    div.classList.add("form-check", "me-3", "mb-2");
+
+    let input = document.createElement("input");
+    input.classList.add("form-check-input");
+    input.type = "checkbox";
+    input.value = category;
+    input.id = `categoryCheck${category}`;
+
+    let label = document.createElement("label");
+    label.classList.add("form-check-label");
+    label.htmlFor = `categoryCheck${category}`;
+    label.textContent = category;
+
+    div.appendChild(input);
+    div.appendChild(label);
+    container.appendChild(div);
+  });
+
+  // Añadir event listener a los checkboxes
+  document.querySelectorAll("#checkbox-container input[type=checkbox]").forEach(checkbox => {
+    checkbox.addEventListener('change', filterEvents);
+  });
+}
+
+function filterEvents() {
+  let searchInput = document.querySelector("#search-input").value.toLowerCase();
+  let selectedCategories = [...document.querySelectorAll("#checkbox-container input[type=checkbox]:checked")]
+    .map(checkbox => checkbox.value);
+
+  let filteredEvents = data.events.filter(event => {
+    let matchesSearch = event.name.toLowerCase().includes(searchInput);
+    let matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(event.category);
+
+    return matchesSearch && matchesCategory;
+  });
+
+  displayEvents(filteredEvents);
+}
+
+function displayEvents(events) {
+  let container = document.querySelector("#events-container2");
+  container.innerHTML = "";
+
+  if (events.length === 0) {
+    container.innerHTML = "<p>No se encontraro eventos</p>";
+    return;
+  }
+
+  events.forEach(event => {
+    let col = document.createElement("div");
+    col.classList.add("col-lg-4", "col-md-6", "mb-4");
+
+    let card = document.createElement("div");
+    card.classList.add("card", "border-light");
+
+    let img = document.createElement("img");
+    img.src = event.image;
+    img.classList.add("card-img-top");
+    img.alt = event.name;
+
+    let body = document.createElement("div");
+    body.classList.add("card-body");
+
+    let title = document.createElement("h5");
+    title.classList.add("card-title");
+    title.textContent = event.name;
+
+    let description = document.createElement("p");
+    description.classList.add("card-text");
+    description.textContent = event.description;
+
+    let category = document.createElement("p");
+    category.classList.add("card-text");
+    category.textContent = `Category: ${event.category}`;
+
+    let place = document.createElement("p");
+    place.classList.add("card-text");
+    place.textContent = `Place: ${event.place}`;
+
+    let capacity = document.createElement("p");
+    capacity.classList.add("card-text");
+    capacity.textContent = `Capacity: ${event.capacity}`;
+
+    let assistance = document.createElement("p");
+    assistance.classList.add("card-text");
+    assistance.textContent = `Assistance: ${event.assistance || 'N/A'}`;
+
+
+    let price = document.createElement("p");
+    price.classList.add("card-text", "text-muted");
+    price.textContent = `$${event.price}`;
+
+    let footer = document.createElement("div");
+    footer.classList.add("card-footer", "d-flex", "justify-content-between");
+
+    let detailsButton = document.createElement("a");
+    detailsButton.href = `./Details.html?id=${event._id}&name=${encodeURIComponent(event.name)}&image=${encodeURIComponent(event.image)}&description=${encodeURIComponent(event.description)}&price=${event.price}`;
+    detailsButton.classList.add("btn", "btn-sm", "btn-outline-secondary");
+    detailsButton.textContent = "Details";
+
+    footer.appendChild(price);
+    footer.appendChild(detailsButton);
+    body.appendChild(title);
+    body.appendChild(description);
+    card.appendChild(img);
+    card.appendChild(body);
+    card.appendChild(footer);
+    col.appendChild(card);
+    container.appendChild(col);
+  });
+}
+
+
+// Inicializa la página
+document.addEventListener("DOMContentLoaded", () => {
+  createEventCheckboxes();
+  displayEvents(data.events);
+});
+
+document.querySelector("#search-input").addEventListener('input', filterEvents);
   
