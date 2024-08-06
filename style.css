@@ -3,7 +3,7 @@ body{
 }
 
 .custom-img {
-    height: 350px;
+    height: 300px;
     margin: 0 auto;
 }
 
@@ -48,18 +48,28 @@ td {
   background-color: #f0f0f0;
 }
 
+.centered-text {
+  text-align: center;
+  font-weight: bold;
+}
+
+.bold-title {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
 .input-group {
   display: flex;
-  max-width: 300px; /* Set the max width of the input group container */
+  max-width: 300px;
 }
 
 .input-group .form-control {
-  flex: 1; /* Take up remaining space */
+  flex: 1;
 }
 
 .input-group .btn-outline-secondary {
-  flex-shrink: 0; /* Prevent the button from shrinking */
-  width: 100px; /* Fixed width for the button */
+  flex-shrink: 0;
+  width: 100px;
 }
 
 #checkbox-container {
@@ -90,12 +100,12 @@ td {
 }
 
 .btn-blue {
-  background-color: #007bff; /* Azul Bootstrap */
-  color: white; /* Color del texto del botón */
+  background-color: #007bff;
+  color: white;
 }
 
 .btn-blue:hover {
-  background-color: #0056b3; /* Azul más oscuro para el hover */
+  background-color: #0056b3;
 }
 
 .event-details-container {
