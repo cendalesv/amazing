@@ -17,8 +17,8 @@ export const fetchData = async (url) => {
 const API_URL = 'https://aulamindhub.github.io/amazing-api/events.json';
 
 /**
- * Fetches event data from the API.
- * @returns {Promise<Array>} A promise that resolves to an array of events.
+ * Obtiene datos de eventos de la API
+ * @returns {Promise<Array>} Una promesa que se resuelve en una serie de eventos.
  */
 export async function fetchEvents() {
     try {

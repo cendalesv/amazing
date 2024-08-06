@@ -1,4 +1,3 @@
-// module/categoryUtils.js
 
 export function renderCategoryCheckboxes(categories, containerSelector) {
     const checkboxContainer = document.querySelector(containerSelector);
